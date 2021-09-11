@@ -1,8 +1,11 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
+import Heading from "remote1/Heading";
+
 const Button = React.lazy(() => import("remote1/Button"));
-const Heading = React.lazy(() => import("remote1/Heading"));
 
 const App = () => {
+  const [count, setCount] = useState(0);
+
   return (
     <div>
       <div
@@ -13,7 +16,9 @@ const App = () => {
           backgroundColor: "greenyellow",
         }}
       >
-        <h1>HOSSSSTTT</h1>
+        <h1>hosts</h1>
+        {count}:{" "}
+        <button onClick={() => setCount((count) => count + 1)}>inc</button>
       </div>
       <Suspense fallback={"loading..."}>
         <Button />
