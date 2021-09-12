@@ -15,6 +15,9 @@ module.exports = {
     hot: false,
     static: path.join(__dirname, "dist"),
     port: 3000,
+    historyApiFallback: {
+      index: "index.html",
+    },
   },
   output: {
     publicPath: "auto",
@@ -38,7 +41,11 @@ module.exports = {
       remotes: {
         remote1: "remote1@[remote1Url]/remoteEntry.js",
       },
-      shared: { react: { singleton: true }, "react-dom": { singleton: true } },
+      shared: {
+        react: { singleton: true },
+        "react-dom": { singleton: true },
+        "react-router-dom": { singleton: true },
+      },
     }),
     new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
