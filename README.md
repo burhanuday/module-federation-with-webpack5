@@ -29,3 +29,7 @@ Remote1 is hosted port 3001 and exposes 2 components Heading and Button.
 The exposed components are used in Host.
 
 The project also uses React Router to show that routing logic works just like a normal React app
+
+## TODO
+
+- Update Webpack configs for production build
