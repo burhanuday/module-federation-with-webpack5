@@ -16,9 +16,9 @@ const App = () => {
           backgroundColor: "greenyellow",
         }}
       >
-        <h1>hosts</h1>
+        <h1>HOST</h1>
         {count}:{" "}
-        <button onClick={() => setCount((count) => count + 1)}>inc</button>
+        <button onClick={() => setCount((count) => count + 1)}>increment</button>
       </div>
       <Suspense fallback={"loading..."}>
         <Button />

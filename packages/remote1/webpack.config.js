@@ -3,12 +3,14 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-const LiveReloadPlugin = require("webpack-livereload-plugin");
-const webpack = require("webpack");
 
 module.exports = {
   entry: "./src/index",
   mode: "development",
+  devtool: "source-map",
+  optimization: {
+    minimize: false,
+  },
   devServer: {
     hot: true,
     static: path.join(__dirname, "dist"),
@@ -45,12 +47,10 @@ module.exports = {
     new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      chunks: ["main"],
     }),
     new ReactRefreshWebpackPlugin({
       exclude: [/node_modules/, /bootstrap\.js$/],
     }),
-    // new LiveReloadPlugin({
-    //   port: 35730,
-    // }),
   ],
 };
