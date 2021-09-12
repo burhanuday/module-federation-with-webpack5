@@ -8,12 +8,12 @@ This repo uses Webpack5 Module Federation plugin to build a React microfrontend
 
 ```shell
 # Terminal 1
-cd host
+cd packages/host
 npm i
 npm start
 
 # Terminal 2
-cd remote1
+cd packages/remote1
 npm i
 npm start
 ```
