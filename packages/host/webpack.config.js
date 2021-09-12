@@ -40,12 +40,13 @@ module.exports = {
       name: "host",
       remotes: {
         remote1: "remote1@[remote1Url]/remoteEntry.js",
+        libs: "libs@[libsUrl]/remoteEntry.js",
       },
-      shared: {
-        react: { singleton: true },
-        "react-dom": { singleton: true },
-        "react-router-dom": { singleton: true },
-      },
+      // shared: {
+      //   react: { singleton: true },
+      //   "react-dom": { singleton: true },
+      //   "react-router-dom": { singleton: true },
+      // },
     }),
     new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({

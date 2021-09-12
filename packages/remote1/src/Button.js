@@ -1,5 +1,5 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React from "libs/react";
+import { useHistory } from "libs/react-router-dom";
 
 const Button = () => {
   let history = useHistory();

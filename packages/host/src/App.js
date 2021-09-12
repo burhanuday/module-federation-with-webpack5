@@ -1,5 +1,10 @@
-import React, { Suspense, useState } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import React, { Suspense, useState } from "libs/react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+} from "libs/react-router-dom";
 
 import Heading from "remote1/Heading";
 

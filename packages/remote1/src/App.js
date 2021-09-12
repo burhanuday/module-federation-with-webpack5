@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "libs/react";
 
 const App = () => {
   const [counter, setCounter] = useState(0);

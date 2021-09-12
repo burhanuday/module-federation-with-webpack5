@@ -37,15 +37,18 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: "remote1",
-      shared: {
-        react: { singleton: true },
-        "react-dom": { singleton: true },
-        "react-router-dom": { singleton: true },
-      },
+      // shared: {
+      //   react: { singleton: true },
+      //   "react-dom": { singleton: true },
+      //   "react-router-dom": { singleton: true },
+      // },
       filename: "remoteEntry.js",
       exposes: {
         "./Button": "./src/Button",
         "./Heading": "./src/Heading",
+      },
+      remotes: {
+        libs: "libs@[libsUrl]/remoteEntry.js",
       },
     }),
     new ExternalTemplateRemotesPlugin(),
