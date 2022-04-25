@@ -8,7 +8,7 @@ const Button = () => {
     history.push("/home");
   }
 
-  return <button onClick={handleClick}>from remote1: GO HOME</button>;
+  return <button onClick={handleClick}>from remote1: GO HOME!</button>;
 };
 
 export default Button;

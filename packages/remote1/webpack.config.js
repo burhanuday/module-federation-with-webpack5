@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const { MFLiveReloadPlugin } = require("@module-federation/fmr");
 
 module.exports = {
   entry: "./src/index",
@@ -35,6 +36,10 @@ module.exports = {
     ],
   },
   plugins: [
+    new MFLiveReloadPlugin({
+      container: "remote1",
+      port: 3001,
+    }),
     new ModuleFederationPlugin({
       name: "remote1",
       shared: {

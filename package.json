@@ -9,5 +9,8 @@
   "private": false,
   "devDependencies": {
     "lerna": "^4.0.0"
+  },
+  "scripts": {
+    "start": "npx lerna run start --parallel"
   }
 }

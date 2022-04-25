@@ -2,7 +2,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const path = require("path");
-const LiveReloadPlugin = require("webpack-livereload-plugin");
 
 module.exports = {
   entry: "./src/index",
@@ -12,12 +11,13 @@ module.exports = {
     minimize: false,
   },
   devServer: {
-    hot: false,
+    hot: true,
     static: path.join(__dirname, "dist"),
     port: 3000,
     historyApiFallback: {
       index: "index.html",
     },
+    liveReload: false,
   },
   output: {
     publicPath: "auto",
@@ -50,9 +50,6 @@ module.exports = {
     new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
-    }),
-    new LiveReloadPlugin({
-      port: 35729,
     }),
   ],
 };
