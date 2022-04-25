@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const path = require("path");
 
 module.exports = {
@@ -50,6 +51,9 @@ module.exports = {
     new ExternalTemplateRemotesPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+    }),
+    new ReactRefreshWebpackPlugin({
+      exclude: [/node_modules/, /bootstrap\.js$/],
     }),
   ],
 };
