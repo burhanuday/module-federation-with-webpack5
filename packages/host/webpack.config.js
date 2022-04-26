@@ -2,6 +2,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const { MFLiveReloadPlugin } = require("@module-federation/fmr");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -34,7 +35,12 @@ module.exports = (_, argv) => ({
     rules: [
       {
         test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        use: [
+          argv.mode === "development"
+            ? "style-loader"
+            : MiniCssExtractPlugin.loader,
+          "css-loader",
+        ],
       },
       {
         test: /\.(ts|js)x?$/i,
@@ -51,10 +57,17 @@ module.exports = (_, argv) => ({
     ],
   },
   plugins: [
+    new MFLiveReloadPlugin({
+      container: "host",
+      port: 3000,
+    }),
     new ModuleFederationPlugin({
       name: "host",
       remotes: {
         remote1: "remote1@[remote1Url]/remoteEntry.js",
+      },
+      exposes: {
+        "./actions": "./src/store/actions",
       },
       shared: {
         ...dependencies,

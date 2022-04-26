@@ -8,7 +8,9 @@
     //tell Typescript to resolve the federated modules within the repository
     "paths": {
       "remote1/Button": ["packages/remote1/src/Button"],
-      "remote1/Heading": ["packages/remote1/src/Heading"]
+      "remote1/Heading": ["packages/remote1/src/Heading"],
+      "remote1/Controls": ["packages/remote1/src/Controls"],
+      "host/actions": ["packages/host/src/store/actions"]
     },
     "module": "commonjs",
     "noImplicitAny": true,

@@ -70,9 +70,13 @@ module.exports = (_, argv) => ({
         },
       },
       filename: "remoteEntry.js",
+      remotes: {
+        host: "host@[hostUrl]/remoteEntry.js",
+      },
       exposes: {
         "./Button": "./src/Button",
         "./Heading": "./src/Heading",
+        "./Controls": "./src/Controls",
       },
     }),
     new ExternalTemplateRemotesPlugin(),
