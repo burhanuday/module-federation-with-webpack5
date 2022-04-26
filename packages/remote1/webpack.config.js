@@ -1,12 +1,10 @@
 const { ModuleFederationPlugin } = require("webpack").container;
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const { MFLiveReloadPlugin } = require("@module-federation/fmr");
 
 module.exports = {
-  entry: "./src/index",
   mode: "development",
   devtool: "source-map",
   optimization: {
@@ -57,10 +55,6 @@ module.exports = {
       },
     }),
     new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      chunks: ["main"],
-    }),
     new ReactRefreshWebpackPlugin({
       exclude: [/node_modules/, /bootstrap\.js$/],
     }),
