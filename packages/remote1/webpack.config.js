@@ -5,6 +5,8 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 const { MFLiveReloadPlugin } = require("@module-federation/fmr");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+const dependencies = require("./package.json").dependencies;
+
 module.exports = (_, argv) => ({
   devtool: "source-map",
   optimization: {
@@ -56,9 +58,16 @@ module.exports = (_, argv) => ({
     new ModuleFederationPlugin({
       name: "remote1",
       shared: {
-        react: { singleton: true },
-        "react-dom": { singleton: true },
-        "react-router-dom": { singleton: true },
+        ...dependencies,
+        react: { singleton: true, requiredVersion: dependencies.react },
+        "react-dom": {
+          singleton: true,
+          requiredVersion: dependencies["react-dom"],
+        },
+        "react-router-dom": {
+          singleton: true,
+          requiredVersion: dependencies["react-router-dom"],
+        },
       },
       filename: "remoteEntry.js",
       exposes: {

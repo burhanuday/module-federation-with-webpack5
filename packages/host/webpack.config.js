@@ -5,6 +5,8 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+const dependencies = require("./package.json").dependencies;
+
 module.exports = (_, argv) => ({
   entry: "./src/index.ts",
   mode: "development",
@@ -55,9 +57,16 @@ module.exports = (_, argv) => ({
         remote1: "remote1@[remote1Url]/remoteEntry.js",
       },
       shared: {
-        react: { singleton: true },
-        "react-dom": { singleton: true },
-        "react-router-dom": { singleton: true },
+        ...dependencies,
+        react: { singleton: true, requiredVersion: dependencies.react },
+        "react-dom": {
+          singleton: true,
+          requiredVersion: dependencies["react-dom"],
+        },
+        "react-router-dom": {
+          singleton: true,
+          requiredVersion: dependencies["react-router-dom"],
+        },
       },
     }),
     new ExternalTemplateRemotesPlugin(),
