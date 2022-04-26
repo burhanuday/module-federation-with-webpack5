@@ -4,7 +4,7 @@ const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const path = require("path");
 
-module.exports = {
+module.exports = (_, argv) => ({
   entry: "./src/index.ts",
   mode: "development",
   devtool: "source-map",
@@ -35,7 +35,10 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           presets: ["@babel/preset-react", "@babel/preset-typescript"],
-          plugins: [require.resolve("react-refresh/babel")],
+          plugins: [
+            argv.mode === "development" &&
+              require.resolve("react-refresh/babel"),
+          ].filter(Boolean),
         },
       },
     ],
@@ -56,8 +59,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
-    new ReactRefreshWebpackPlugin({
-      exclude: [/node_modules/, /bootstrap\.js$/],
-    }),
-  ],
-};
+    argv.mode === "development" &&
+      new ReactRefreshWebpackPlugin({
+        exclude: [/node_modules/, /bootstrap\.js$/],
+      }),
+  ].filter(Boolean),
+});

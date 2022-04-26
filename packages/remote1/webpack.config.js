@@ -4,8 +4,7 @@ const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const { MFLiveReloadPlugin } = require("@module-federation/fmr");
 
-module.exports = {
-  mode: "development",
+module.exports = (_, argv) => ({
   devtool: "source-map",
   optimization: {
     minimize: false,
@@ -31,7 +30,10 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           presets: ["@babel/preset-react", "@babel/preset-typescript"],
-          plugins: [require.resolve("react-refresh/babel")],
+          plugins: [
+            argv.mode === "development" &&
+              require.resolve("react-refresh/babel"),
+          ].filter(Boolean),
         },
       },
     ],
@@ -55,8 +57,9 @@ module.exports = {
       },
     }),
     new ExternalTemplateRemotesPlugin(),
-    new ReactRefreshWebpackPlugin({
-      exclude: [/node_modules/, /bootstrap\.js$/],
-    }),
-  ],
-};
+    argv.mode === "development" &&
+      new ReactRefreshWebpackPlugin({
+        exclude: [/node_modules/, /bootstrap\.js$/],
+      }),
+  ].filter(Boolean),
+});
