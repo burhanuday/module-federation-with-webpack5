@@ -5,7 +5,7 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 const path = require("path");
 
 module.exports = {
-  entry: "./src/index",
+  entry: "./src/index.ts",
   mode: "development",
   devtool: "source-map",
   optimization: {
@@ -24,14 +24,18 @@ module.exports = {
     publicPath: "auto",
     clean: true,
   },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(ts|js)x?$/i,
         loader: "babel-loader",
         exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react"],
+          presets: ["@babel/preset-react", "@babel/preset-typescript"],
+          plugins: [require.resolve("react-refresh/babel")],
         },
       },
     ],

@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-const Button = () => {
+const Button = (): JSX.Element => {
   let history = useHistory();
 
   function handleClick() {

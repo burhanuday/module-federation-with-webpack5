@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const App = () => {
+const App = (): JSX.Element => {
   const [counter, setCounter] = useState(0);
 
   return (
