@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["es2015", "dom"],
     //needed for React
     "esModuleInterop": true,
     "jsx": "react",
@@ -8,6 +9,14 @@
     "paths": {
       "remote1/Button": ["packages/remote1/src/Button"],
       "remote1/Heading": ["packages/remote1/src/Heading"]
-    }
+    },
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "outDir": "./build/",
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "es5",
+    "noEmit": true
   }
 }
