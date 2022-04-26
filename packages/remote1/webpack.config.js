@@ -3,6 +3,7 @@ const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const { MFLiveReloadPlugin } = require("@module-federation/fmr");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (_, argv) => ({
   devtool: "source-map",
@@ -24,6 +25,15 @@ module.exports = (_, argv) => ({
   },
   module: {
     rules: [
+      {
+        test: /\.css$/i,
+        use: [
+          argv.mode === "development"
+            ? "style-loader"
+            : MiniCssExtractPlugin.loader,
+          "css-loader",
+        ],
+      },
       {
         test: /\.(ts|js)x?$/i,
         loader: "babel-loader",
@@ -57,6 +67,7 @@ module.exports = (_, argv) => ({
       },
     }),
     new ExternalTemplateRemotesPlugin(),
+    new MiniCssExtractPlugin(),
     argv.mode === "development" &&
       new ReactRefreshWebpackPlugin({
         exclude: [/node_modules/, /bootstrap\.js$/],

@@ -3,6 +3,7 @@ const { ModuleFederationPlugin } = require("webpack").container;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = (_, argv) => ({
   entry: "./src/index.ts",
@@ -29,6 +30,10 @@ module.exports = (_, argv) => ({
   },
   module: {
     rules: [
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
       {
         test: /\.(ts|js)x?$/i,
         loader: "babel-loader",
@@ -59,6 +64,7 @@ module.exports = (_, argv) => ({
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
+    new MiniCssExtractPlugin(),
     argv.mode === "development" &&
       new ReactRefreshWebpackPlugin({
         exclude: [/node_modules/, /bootstrap\.js$/],

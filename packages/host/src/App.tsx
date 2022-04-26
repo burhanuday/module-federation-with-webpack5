@@ -1,5 +1,6 @@
 import React, { Suspense, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import "./index.css";
 
 import Heading from "remote1/Heading";
 
@@ -12,11 +13,11 @@ const App = (): JSX.Element => {
     <Router>
       <div>
         <div
+          className="container"
           style={{
             margin: "10px",
             padding: "10px",
             textAlign: "center",
-            backgroundColor: "greenyellow",
           }}
         >
           <h1>HOST</h1>

@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./index.css";
+
 interface HeadingProps {
   text?: string;
 }
