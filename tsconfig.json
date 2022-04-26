@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    //needed for React
+    "esModuleInterop": true,
+    "jsx": "react",
+    "baseUrl": ".",
+    //tell Typescript to resolve the federated modules within the repository
+    "paths": {
+      "remote1/Button": ["packages/remote1/src/Button"],
+      "remote1/Heading": ["packages/remote1/src/Heading"]
+    }
+  }
+}
