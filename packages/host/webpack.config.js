@@ -2,13 +2,14 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const { MFLiveReloadPlugin } = require("@module-federation/fmr");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const dependencies = require("./package.json").dependencies;
 
 module.exports = (_, argv) => ({
-  entry: "./src/index.ts",
+  entry: { host: "./src/index.ts" },
   mode: "development",
   devtool: "source-map",
   optimization: {
@@ -56,14 +57,19 @@ module.exports = (_, argv) => ({
     ],
   },
   plugins: [
+    // new MFLiveReloadPlugin({
+    //   container: "host",
+    //   port: 3000,
+    // }),
     new ModuleFederationPlugin({
       name: "host",
+      filename: "host.remoteEntry.js",
       remotes: {
-        remote1: "remote1@[remote1Url]/remoteEntry.js",
+        remote1: "remote1@[remote1Url]/remote1.remoteEntry.js",
       },
-      // exposes: {
-      //   "./actions": "./src/store/actions",
-      // },
+      exposes: {
+        "./actions": "./src/store/actions",
+      },
       shared: {
         ...dependencies,
         react: { singleton: true, requiredVersion: dependencies.react },

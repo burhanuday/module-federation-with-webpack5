@@ -12,6 +12,7 @@ module.exports = (_, argv) => {
 
   return {
     devtool: "source-map",
+    entry: { remote1: "./src/index.ts" },
     optimization: {
       minimize: false,
     },
@@ -74,10 +75,10 @@ module.exports = (_, argv) => {
             requiredVersion: dependencies["react-router-dom"],
           },
         },
-        filename: "remoteEntry.js",
-        // remotes: {
-        //   host: "host@[hostUrl]/remoteEntry.js",
-        // },
+        filename: "remote1.remoteEntry.js",
+        remotes: {
+          host: "host@[hostUrl]/host.remoteEntry.js",
+        },
         exposes: {
           "./Button": "./src/Button",
           "./Heading": "./src/Heading",
