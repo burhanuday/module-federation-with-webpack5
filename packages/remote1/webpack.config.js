@@ -12,6 +12,7 @@ module.exports = (_, argv) => {
 
   return {
     devtool: "source-map",
+    // entry point name should match name in module federation plugin
     entry: { remote1: "./src/index.ts" },
     optimization: {
       minimize: false,
@@ -33,6 +34,7 @@ module.exports = (_, argv) => {
       rules: [
         {
           test: /\.css$/i,
+          // MiniCssExtract breaks with module federation in dev mode
           use: [
             isDev ? "style-loader" : MiniCssExtractPlugin.loader,
             "css-loader",
@@ -52,6 +54,8 @@ module.exports = (_, argv) => {
       ],
     },
     plugins: [
+      // Used for automatic reloads. container should match
+      // name of the current project
       isDev &&
         new MFLiveReloadPlugin({
           container: "remote1",
@@ -62,6 +66,7 @@ module.exports = (_, argv) => {
           exclude: [/node_modules/, /bootstrap\.js$/],
         }),
       new ModuleFederationPlugin({
+        // should match entry point name
         name: "remote1",
         shared: {
           ...dependencies,
@@ -75,8 +80,10 @@ module.exports = (_, argv) => {
             requiredVersion: dependencies["react-router-dom"],
           },
         },
+        // avoid exporting as remoteEntry.js May cause confusion
         filename: "remote1.remoteEntry.js",
         remotes: {
+          // hostUrl is set on window of host
           host: "host@[hostUrl]/host.remoteEntry.js",
         },
         exposes: {
@@ -85,6 +92,7 @@ module.exports = (_, argv) => {
           "./Controls": "./src/Controls",
         },
       }),
+      // allows usage of dynamic remote urls
       new ExternalTemplateRemotesPlugin(),
       new MiniCssExtractPlugin(),
     ].filter(Boolean),

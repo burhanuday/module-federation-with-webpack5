@@ -9,6 +9,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const dependencies = require("./package.json").dependencies;
 
 module.exports = (_, argv) => ({
+  // entry point name should match name in module federation plugin
   entry: { host: "./src/index.ts" },
   mode: "development",
   devtool: "source-map",
@@ -36,6 +37,7 @@ module.exports = (_, argv) => ({
       {
         test: /\.css$/i,
         use: [
+          // MiniCssExtract breaks with module federation in dev mode
           argv.mode === "development"
             ? "style-loader"
             : MiniCssExtractPlugin.loader,
@@ -63,7 +65,9 @@ module.exports = (_, argv) => ({
     // }),
     new ModuleFederationPlugin({
       name: "host",
+      // avoid exporting as remoteEntry.js May cause confusion
       filename: "host.remoteEntry.js",
+      // remote1Url is set on window
       remotes: {
         remote1: "remote1@[remote1Url]/remote1.remoteEntry.js",
       },
