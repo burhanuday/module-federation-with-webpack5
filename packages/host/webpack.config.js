@@ -65,7 +65,7 @@ module.exports = (_, argv) => ({
       name: "host",
       filename: "host.remoteEntry.js",
       remotes: {
-        remote1: "remote1@http://localhost:3001/remote1.remoteEntry.js",
+        remote1: "remote1@[remote1Url]/remote1.remoteEntry.js",
       },
       exposes: {
         "./actions": "./src/store/actions",
