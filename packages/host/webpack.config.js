@@ -98,10 +98,7 @@ module.exports = (_, argv) => ({
       remotes: {
         remote1: "remote1@[remote1Url]/remote1.remoteEntry.js",
       },
-      exposes: {
-        "./actions": "./src/store/actions",
-        "./data": "./src/data",
-      },
+      exposes: {},
       shared: {
         ...dependencies,
         react: { singleton: true, requiredVersion: dependencies.react },
