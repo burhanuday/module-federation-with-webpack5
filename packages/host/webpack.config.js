@@ -13,9 +13,6 @@ module.exports = (_, argv) => ({
   entry: { host: "./src/index.ts" },
   mode: "development",
   devtool: "source-map",
-  optimization: {
-    minimize: false,
-  },
   devServer: {
     hot: true,
     static: path.join(__dirname, "dist"),
@@ -31,6 +28,36 @@ module.exports = (_, argv) => ({
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
+  },
+  optimization: {
+    /**
+     * Module federation breaks when setting runtimeChunk to single
+     * In the future - https://github.com/module-federation/concat-runtime
+     */
+    // runtimeChunk: 'single',
+    minimize: true,
+    moduleIds: "named",
+    chunkIds: "named",
+    splitChunks: {
+      cacheGroups: {
+        defaultVendors: {
+          test: new RegExp(
+            /[\\/]node_modules[\\/](?!(html2canvas|d3|@mikecousins|@bundled-es-modules|chart.js|react-chartjs-2|react-virtualized|react-dates|crypto-js))/
+          ),
+          chunks: "all",
+          name: "vendor",
+          enforce: true,
+          priority: 20,
+        },
+        common: {
+          name: "common",
+          minChunks: 3,
+          reuseExistingChunk: true,
+          enforce: true,
+          priority: 10,
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -73,6 +100,7 @@ module.exports = (_, argv) => ({
       },
       exposes: {
         "./actions": "./src/store/actions",
+        "./data": "./src/data",
       },
       shared: {
         ...dependencies,

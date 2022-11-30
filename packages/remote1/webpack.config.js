@@ -90,6 +90,8 @@ module.exports = (_, argv) => {
           "./Button": "./src/Button",
           "./Heading": "./src/Heading",
           "./Controls": "./src/Controls",
+          "./reducer": "./src/reducer",
+          "./another": "./src/another",
         },
       }),
       // allows usage of dynamic remote urls
