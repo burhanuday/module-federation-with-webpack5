@@ -8,6 +8,9 @@ const App = (): JSX.Element => {
     <Provider store={store}>
       Hi there
       <PokemonDetail pokemonName="bulbasaur" />
+      <PokemonDetail pokemonName="ditto" />
+      <PokemonDetail pokemonName="venusaur" />
+      <PokemonDetail pokemonName="charmander" />
     </Provider>
   );
 };
