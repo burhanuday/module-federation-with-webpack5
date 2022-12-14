@@ -86,10 +86,7 @@ module.exports = (_, argv) => {
           // hostUrl is set on window of host
           host: "host@[hostUrl]/host.remoteEntry.js",
         },
-        exposes: {
-          "./Button": "./src/Button",
-          "./Heading": "./src/Heading",
-        },
+        exposes: {},
       }),
       // allows usage of dynamic remote urls
       new ExternalTemplateRemotesPlugin(),
