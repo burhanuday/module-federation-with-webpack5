@@ -8,7 +8,13 @@
     //tell Typescript to resolve the federated modules within the repository
     "paths": {
       "host/apiSlice": ["packages/host/src/store/apiSlice"],
-      "remote1/SpeciesDetail": ["packages/remote1/src/components/SpeciesDetail"]
+      "remote1/SpeciesDetail": [
+        "packages/remote1/src/components/SpeciesDetail"
+      ],
+      "remote1/SpeciesCounter": [
+        "packages/remote1/src/components/SpeciesCounter"
+      ],
+      "remote1/remoteSlice": ["packages/remote1/src/remoteSlice"]
     },
     "module": "commonjs",
     "noImplicitAny": true,

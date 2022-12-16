@@ -89,6 +89,8 @@ module.exports = (_, argv) => {
         },
         exposes: {
           "./SpeciesDetail": "./src/components/SpeciesDetail",
+          "./SpeciesCounter": "./src/components/SpeciesCounter",
+          "./remoteSlice": "./src/remoteSlice",
         },
       }),
       // allows usage of dynamic remote urls
