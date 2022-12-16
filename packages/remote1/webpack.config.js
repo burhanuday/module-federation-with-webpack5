@@ -12,6 +12,7 @@ module.exports = (_, argv) => {
 
   return {
     devtool: "source-map",
+    mode: "development",
     // entry point name should match name in module federation plugin
     entry: { remote1: "./src/index.ts" },
     optimization: {
@@ -86,7 +87,9 @@ module.exports = (_, argv) => {
           // hostUrl is set on window of host
           host: "host@[hostUrl]/host.remoteEntry.js",
         },
-        exposes: {},
+        exposes: {
+          "./SpeciesDetail": "./src/components/SpeciesDetail",
+        },
       }),
       // allows usage of dynamic remote urls
       new ExternalTemplateRemotesPlugin(),

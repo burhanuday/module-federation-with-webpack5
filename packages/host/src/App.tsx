@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { Suspense } from "react";
 import { Provider } from "react-redux";
 import { PokemonDetail } from "./components/PokemonDetail";
 import { store } from "./store";
+import { SpeciesDetail } from "remote1/SpeciesDetail";
 
 const App = (): JSX.Element => {
   return (
@@ -11,6 +12,7 @@ const App = (): JSX.Element => {
       <PokemonDetail pokemonName="ditto" />
       <PokemonDetail pokemonName="venusaur" />
       <PokemonDetail pokemonName="charmander" />
+      <SpeciesDetail speciesName="aegislash" />
     </Provider>
   );
 };

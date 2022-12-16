@@ -30,34 +30,9 @@ module.exports = (_, argv) => ({
     extensions: [".tsx", ".ts", ".js"],
   },
   optimization: {
-    /**
-     * Module federation breaks when setting runtimeChunk to single
-     * In the future - https://github.com/module-federation/concat-runtime
-     */
-    // runtimeChunk: 'single',
     minimize: true,
     moduleIds: "named",
     chunkIds: "named",
-    splitChunks: {
-      cacheGroups: {
-        defaultVendors: {
-          test: new RegExp(
-            /[\\/]node_modules[\\/](?!(html2canvas|d3|@mikecousins|@bundled-es-modules|chart.js|react-chartjs-2|react-virtualized|react-dates|crypto-js))/
-          ),
-          chunks: "all",
-          name: "vendor",
-          enforce: true,
-          priority: 20,
-        },
-        common: {
-          name: "common",
-          minChunks: 3,
-          reuseExistingChunk: true,
-          enforce: true,
-          priority: 10,
-        },
-      },
-    },
   },
   module: {
     rules: [
@@ -98,7 +73,9 @@ module.exports = (_, argv) => ({
       remotes: {
         remote1: "remote1@[remote1Url]/remote1.remoteEntry.js",
       },
-      exposes: {},
+      exposes: {
+        "./apiSlice": "./src/store/apiSlice",
+      },
       shared: {
         ...dependencies,
         react: { singleton: true, requiredVersion: dependencies.react },
