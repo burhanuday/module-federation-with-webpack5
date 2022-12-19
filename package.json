@@ -1,13 +1,21 @@
 {
   "name": "module-federation-with-react",
+  "private": true,
   "version": "1.0.0",
   "description": "experiments with module federation in React with Webpack5",
   "main": "index.js",
   "repository": "https://github.com/burhanuday/module-federation-with-react",
   "author": "burhanuday",
   "license": "MIT",
-  "private": false,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "eslint": "^8.30.0",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-shared-redux": "1.0.0",
     "lerna": "^4.0.0",
     "typescript": "^4.6.3"
   },
