@@ -18,7 +18,7 @@ module.exports = {
       ],
       plugins: ["shared-redux", "react", "@typescript-eslint"],
       rules: {
-        "shared-redux/no-restricted-state": "error",
+        "shared-redux/no-restricted-state-access": "error",
       },
       settings: {
         react: {
@@ -28,6 +28,6 @@ module.exports = {
     },
   },
   rules: {
-    "no-restricted-state": require("./no-restricted-state"),
+    "no-restricted-state-access": require("./no-restricted-state-access"),
   },
 };

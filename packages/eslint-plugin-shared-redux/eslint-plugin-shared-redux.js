@@ -1,7 +1,7 @@
-const noRestrictedState = require('./no-restricted-state');
+const noRestrictedStateAccess = require("./no-restricted-state-access");
 
 module.exports = {
   rules: {
-    'no-restricted-state': noRestrictedState,
+    "no-restricted-state-access": noRestrictedStateAccess,
   },
 };
