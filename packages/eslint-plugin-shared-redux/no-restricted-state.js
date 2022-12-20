@@ -2,16 +2,9 @@ function isUseSelector(node) {
   return node.callee.name === "useSelector";
 }
 
-function reportWrongName(context, node, functionName, matching) {
-  context.report({
-    message: `useSelector selector "${functionName}" does not match "${matching}".`,
-    node,
-  });
-}
-
 function reportNoRestrictedState(context, node) {
   context.report({
-    message: "useSelector should not use shell states",
+    message: "App should not access Redux state of other apps",
     node,
   });
 }
@@ -20,12 +13,14 @@ function reportNoRestrictedState(context, node) {
 module.exports = {
   meta: {
     type: "problem",
-    messages: {
-      avoidName: "Avoid  '{{ name }}'",
+    docs: {
+      description: "do not access",
     },
   },
   create(context) {
     const config = context.options[0] || {};
+    const allowedReduxStates = config.allowedReduxStates || [];
+    if (config.appState) allowedReduxStates.push(config.appState);
 
     return {
       CallExpression(node) {
@@ -39,7 +34,7 @@ module.exports = {
           const functionBody = functionExpression.body;
           if (functionBody && functionBody.object) {
             const returnedValue = functionBody.object.property;
-            if (returnedValue.name === "remote") {
+            if (!allowedReduxStates.includes(returnedValue.name)) {
               reportNoRestrictedState(context, node);
             }
           }

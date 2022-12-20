@@ -4,6 +4,8 @@ import { increment } from "../remoteSlice";
 
 export function SpeciesCounter() {
   const speciesCount = useSelector((state) => state.remote.counter);
+  const hostCounter = useSelector((state) => state.host.counter);
+  const otherAppCounter = useSelector((state) => state.otherApp.counter);
   const dispatch = useDispatch();
   return (
     <div>
