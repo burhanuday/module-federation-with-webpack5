@@ -9,6 +9,10 @@ function isFunctionExpression(node) {
   );
 }
 
+function isArrowFunctionExpression(node) {
+  return node.type === "ArrowFunctionExpression";
+}
+
 function reportNoRestrictedState(context, node, stateName) {
   context.report({
     message: `App should not access Redux state of other apps. Trying to access "${stateName}"`,
@@ -34,18 +38,20 @@ module.exports = {
         if (!isUseSelector(node)) return;
         const functionExpression = node.arguments && node.arguments[0];
         if (functionExpression && isFunctionExpression(functionExpression)) {
-          let functionBody = functionExpression.body;
+          if (isArrowFunctionExpression) {
+            let functionBody = functionExpression.body;
 
-          while (
-            functionBody.type === "MemberExpression" &&
-            functionBody.object?.type === "MemberExpression"
-          ) {
-            functionBody = functionBody.object;
-          }
+            while (
+              functionBody.type === "MemberExpression" &&
+              functionBody.object?.type === "MemberExpression"
+            ) {
+              functionBody = functionBody.object;
+            }
 
-          const returnedValue = functionBody.property;
-          if (!allowedReduxStates.includes(returnedValue.name)) {
-            reportNoRestrictedState(context, node, returnedValue.name);
+            const returnedValue = functionBody.property;
+            if (!allowedReduxStates.includes(returnedValue.name)) {
+              reportNoRestrictedState(context, node, returnedValue.name);
+            }
           }
         }
       },
