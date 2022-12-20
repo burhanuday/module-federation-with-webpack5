@@ -9,9 +9,9 @@ function reportWrongName(context, node, functionName, matching) {
   });
 }
 
-function reportNoSelector(context, node) {
+function reportNoRestrictedState(context, node) {
   context.report({
-    message: "useSelector should use a named selector function.",
+    message: "useSelector should not use shell states",
     node,
   });
 }
@@ -30,20 +30,19 @@ module.exports = {
     return {
       CallExpression(node) {
         if (!isUseSelector(node)) return;
-        const selector = node.arguments && node.arguments[0];
+        const functionExpression = node.arguments && node.arguments[0];
         if (
-          selector &&
-          (selector.type === "ArrowFunctionExpression" ||
-            selector.type === "FunctionExpression")
+          functionExpression &&
+          (functionExpression.type === "ArrowFunctionExpression" ||
+            functionExpression.type === "FunctionExpression")
         ) {
-          reportNoSelector(context, node);
-        } else if (
-          selector &&
-          selector.type === "Identifier" &&
-          config.matching &&
-          !selector.name.match(new RegExp(config.matching))
-        ) {
-          reportWrongName(context, node, selector.name, config.matching);
+          const functionBody = functionExpression.body;
+          if (functionBody && functionBody.object) {
+            const returnedValue = functionBody.object.property;
+            if (returnedValue.name === "remote") {
+              reportNoRestrictedState(context, node);
+            }
+          }
         }
       },
     };
