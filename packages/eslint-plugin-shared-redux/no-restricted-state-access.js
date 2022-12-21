@@ -13,6 +13,10 @@ function isArrowFunctionExpression(node) {
   return node.type === "ArrowFunctionExpression";
 }
 
+function isObjectDestructuring(node) {
+  return node?.type === "ObjectPattern";
+}
+
 function reportNoRestrictedState(context, node, stateName) {
   context.report({
     message: `App should not access Redux state of other apps. Trying to access "${stateName}"`,
@@ -41,16 +45,34 @@ module.exports = {
           if (isArrowFunctionExpression(functionExpression)) {
             let functionBody = functionExpression.body;
 
-            while (
-              functionBody.type === "MemberExpression" &&
-              functionBody.object?.type === "MemberExpression"
-            ) {
-              functionBody = functionBody.object;
-            }
+            // check for params destructuring
+            if (isObjectDestructuring(functionExpression.params?.[0])) {
+              // handle the destructuring case
+              const destructuredObject = functionExpression.params[0];
+              const keys = destructuredObject?.properties;
+              if (keys) {
+                for (const property of keys) {
+                  if (!allowedReduxStates.includes(property?.key?.name)) {
+                    reportNoRestrictedState(context, node, property?.key?.name);
+                  }
+                }
+              }
+            } else {
+              // handle non destructuring case
+              while (
+                functionBody.type === "MemberExpression" &&
+                functionBody.object?.type === "MemberExpression"
+              ) {
+                functionBody = functionBody.object;
+              }
 
-            const returnedValue = functionBody?.property;
-            if (!allowedReduxStates.includes(returnedValue?.name)) {
-              reportNoRestrictedState(context, node, returnedValue.name);
+              const returnedValue = functionBody?.property;
+              if (
+                returnedValue?.name &&
+                !allowedReduxStates.includes(returnedValue?.name)
+              ) {
+                reportNoRestrictedState(context, node, returnedValue.name);
+              }
             }
           } else {
             const blockStatement = functionExpression.body;
@@ -69,7 +91,10 @@ module.exports = {
             }
 
             const identifier = memberExpression.property;
-            if (!allowedReduxStates.includes(identifier?.name)) {
+            if (
+              identifier?.name &&
+              !allowedReduxStates.includes(identifier?.name)
+            ) {
               reportNoRestrictedState(context, node, identifier.name);
             }
           }
