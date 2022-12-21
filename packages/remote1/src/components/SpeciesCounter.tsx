@@ -8,9 +8,16 @@ export function SpeciesCounter() {
   const otherAppCounter = useSelector((state) => state.otherApp);
   const otherAppCounter1 = useSelector((state) => state.otherApp.counter);
   const otherAppCounter2 = useSelector((state) => state.otherApp.counter.data);
-  // const otherAppCounter2 = useSelector(function (state) {
-  //   return state.otherApp.counter;
-  // });
+  const otherAppCounter4 = useSelector(function (state) {
+    return state.otherApp;
+  });
+  const otherAppCounter3 = useSelector(function (state) {
+    return state.otherApp.counter;
+  });
+
+  const otherAppCounter5 = useSelector(function (state) {
+    return state.otherApp.counter.data;
+  });
   const dispatch = useDispatch();
   return (
     <div>

@@ -38,7 +38,7 @@ module.exports = {
         if (!isUseSelector(node)) return;
         const functionExpression = node.arguments && node.arguments[0];
         if (functionExpression && isFunctionExpression(functionExpression)) {
-          if (isArrowFunctionExpression) {
+          if (isArrowFunctionExpression(functionExpression)) {
             let functionBody = functionExpression.body;
 
             while (
@@ -48,9 +48,29 @@ module.exports = {
               functionBody = functionBody.object;
             }
 
-            const returnedValue = functionBody.property;
-            if (!allowedReduxStates.includes(returnedValue.name)) {
+            const returnedValue = functionBody?.property;
+            if (!allowedReduxStates.includes(returnedValue?.name)) {
               reportNoRestrictedState(context, node, returnedValue.name);
+            }
+          } else {
+            const blockStatement = functionExpression.body;
+
+            const returnStatement = blockStatement?.body?.find(
+              (item) => item.type === "ReturnStatement"
+            );
+
+            let memberExpression = returnStatement.argument;
+
+            while (
+              memberExpression.type === "MemberExpression" &&
+              memberExpression.object?.type === "MemberExpression"
+            ) {
+              memberExpression = memberExpression.object;
+            }
+
+            const identifier = memberExpression.property;
+            if (!allowedReduxStates.includes(identifier?.name)) {
+              reportNoRestrictedState(context, node, identifier.name);
             }
           }
         }
