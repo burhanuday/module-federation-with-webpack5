@@ -32,6 +32,7 @@ function getAllowedReduxStates(context) {
   const config = context.options[0] || {};
   const allowedReduxStates = config.allowedReduxStates || [];
   if (config.appState) allowedReduxStates.push(config.appState);
+  return allowedReduxStates;
 }
 
 function validateDestructuredParams(context, destructuredObject) {
