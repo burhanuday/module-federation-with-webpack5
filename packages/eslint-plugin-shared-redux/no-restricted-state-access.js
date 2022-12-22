@@ -47,6 +47,15 @@ function validateDestructuredParams(context, destructuredObject) {
   }
 }
 
+function getReturnStatementFromCodeBlock(node) {
+  let returnStatement = node.body;
+  returnStatement = returnStatement?.body?.find(
+    (item) => item.type === "ReturnStatement"
+  );
+
+  return returnStatement.argument;
+}
+
 function findAndValidateReturnValue(context, node) {
   const allowedReduxStates = getAllowedReduxStates(context);
 
@@ -90,19 +99,10 @@ module.exports = {
         }
 
         // handle non destructuring case
-        let functionBody;
+        let functionBody = functionExpression.body;
 
-        if (isArrowFunctionExpression(functionExpression)) {
-          // find the return value of arrow function
-          functionBody = functionExpression.body;
-        } else {
-          // find the return statement in case of normal function
-          functionBody = functionExpression.body;
-          const returnStatement = functionBody?.body?.find(
-            (item) => item.type === "ReturnStatement"
-          );
-
-          functionBody = returnStatement.argument;
+        if (!isArrowFunctionExpression(functionExpression)) {
+          functionBody = getReturnStatementFromCodeBlock(functionExpression);
         }
 
         findAndValidateReturnValue(context, functionBody);
@@ -113,12 +113,10 @@ module.exports = {
         if (!isFunctionExpression(node.init)) return;
 
         const functionExpression = node.init;
-        const functionParams = functionExpression.params;
-        const firstParam = functionParams[0];
 
-        if (isObjectDestructuring(firstParam)) {
+        if (isObjectDestructuring(functionExpression.params?.[0])) {
           // handle destructuring case
-          const destructuredObject = firstParam;
+          const destructuredObject = functionExpression.params[0];
           validateDestructuredParams(context, destructuredObject);
           return;
         }
@@ -133,17 +131,12 @@ module.exports = {
             let propertyValue = property.value;
             findAndValidateReturnValue(context, propertyValue);
           }
-
           return;
         }
 
         // handle block statement with return statement
-        let returnStatement = functionExpression.body;
-        returnStatement = returnStatement?.body?.find(
-          (item) => item.type === "ReturnStatement"
-        );
-
-        let returnArgument = returnStatement.argument;
+        const returnArgument =
+          getReturnStatementFromCodeBlock(functionExpression);
         findAndValidateReturnValue(context, returnArgument);
       },
     };
