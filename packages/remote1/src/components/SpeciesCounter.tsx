@@ -48,6 +48,10 @@ export function SpeciesCounter() {
   const otherAppCounter11 = useSelector(function ({ host, otherApp }: State) {
     return otherApp.counter.data;
   });
+
+  const otherAppCounter12 = useSelector(function (state: State) {
+    return { data: state.otherApp.counter.data };
+  });
   const dispatch = useDispatch();
   return (
     <div>

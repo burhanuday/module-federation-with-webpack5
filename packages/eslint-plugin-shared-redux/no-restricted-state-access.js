@@ -48,17 +48,16 @@ function validateDestructuredParams(context, destructuredObject) {
 }
 
 function getReturnStatementFromCodeBlock(node) {
-  let returnStatement = node.body;
-  returnStatement = returnStatement?.body?.find(
+  const statements = node.body;
+  const returnStatement = statements?.body?.find(
     (item) => item.type === "ReturnStatement"
   );
 
-  return returnStatement.argument;
+  return returnStatement?.argument;
 }
 
-function findAndValidateReturnValue(context, node) {
+function validateReturnStatement(context, node) {
   const allowedReduxStates = getAllowedReduxStates(context);
-
   while (
     node.type === "MemberExpression" &&
     node.object?.type === "MemberExpression"
@@ -74,6 +73,20 @@ function findAndValidateReturnValue(context, node) {
   ) {
     reportNoRestrictedState(context, returnedValue, returnedValue.name);
   }
+}
+
+function findAndValidateReturnValue(context, node) {
+  if (node.type === "ObjectExpression") {
+    const properties = node.properties;
+    if (properties) {
+      for (const property of properties) {
+        const propertyValue = property.value;
+        validateReturnStatement(context, propertyValue);
+      }
+    }
+  }
+
+  validateReturnStatement(context, node);
 }
 
 /** @type {import('eslint').Rule.RuleModule} */
