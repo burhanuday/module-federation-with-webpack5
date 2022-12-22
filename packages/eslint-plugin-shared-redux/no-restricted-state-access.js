@@ -43,7 +43,7 @@ module.exports = {
         const functionExpression = node.arguments && node.arguments[0];
         if (functionExpression && isFunctionExpression(functionExpression)) {
           if (isObjectDestructuring(functionExpression.params?.[0])) {
-            // handle the destructuring case
+            // handle the destructuring case with multiple keys
             const destructuredObject = functionExpression.params[0];
             const keys = destructuredObject?.properties;
             if (keys) {
@@ -56,11 +56,14 @@ module.exports = {
             return;
           }
 
+          // handle non destructuring case
           let functionBody;
 
           if (isArrowFunctionExpression(functionExpression)) {
+            // find the return value of arrow function
             functionBody = functionExpression.body;
           } else {
+            // find the return statement in case of normal function
             functionBody = functionExpression.body;
             const returnStatement = functionBody?.body?.find(
               (item) => item.type === "ReturnStatement"
@@ -69,7 +72,6 @@ module.exports = {
             functionBody = returnStatement.argument;
           }
 
-          // handle non destructuring case
           while (
             functionBody.type === "MemberExpression" &&
             functionBody.object?.type === "MemberExpression"
@@ -78,6 +80,7 @@ module.exports = {
           }
 
           const returnedValue = functionBody?.property;
+          // check if accessing state is allowed
           if (
             returnedValue?.name &&
             !allowedReduxStates.includes(returnedValue?.name)
