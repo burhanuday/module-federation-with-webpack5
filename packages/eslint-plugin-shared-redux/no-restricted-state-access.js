@@ -62,45 +62,45 @@ module.exports = {
       CallExpression(node) {
         if (!isUseSelector(node)) return;
         const functionExpression = node.arguments && node.arguments[0];
-        if (functionExpression && isFunctionExpression(functionExpression)) {
-          if (isObjectDestructuring(functionExpression.params?.[0])) {
-            // handle the destructuring case with multiple keys
-            const destructuredObject = functionExpression.params[0];
-            validateDestructuredParams(context, destructuredObject);
-            return;
-          }
+        if (!isFunctionExpression(functionExpression)) return;
 
-          // handle non destructuring case
-          let functionBody;
+        if (isObjectDestructuring(functionExpression.params?.[0])) {
+          // handle the destructuring case with multiple keys
+          const destructuredObject = functionExpression.params[0];
+          validateDestructuredParams(context, destructuredObject);
+          return;
+        }
 
-          if (isArrowFunctionExpression(functionExpression)) {
-            // find the return value of arrow function
-            functionBody = functionExpression.body;
-          } else {
-            // find the return statement in case of normal function
-            functionBody = functionExpression.body;
-            const returnStatement = functionBody?.body?.find(
-              (item) => item.type === "ReturnStatement"
-            );
+        // handle non destructuring case
+        let functionBody;
 
-            functionBody = returnStatement.argument;
-          }
+        if (isArrowFunctionExpression(functionExpression)) {
+          // find the return value of arrow function
+          functionBody = functionExpression.body;
+        } else {
+          // find the return statement in case of normal function
+          functionBody = functionExpression.body;
+          const returnStatement = functionBody?.body?.find(
+            (item) => item.type === "ReturnStatement"
+          );
 
-          while (
-            functionBody.type === "MemberExpression" &&
-            functionBody.object?.type === "MemberExpression"
-          ) {
-            functionBody = functionBody.object;
-          }
+          functionBody = returnStatement.argument;
+        }
 
-          const returnedValue = functionBody?.property;
-          // check if accessing state is allowed
-          if (
-            returnedValue?.name &&
-            !allowedReduxStates.includes(returnedValue?.name)
-          ) {
-            reportNoRestrictedState(context, returnedValue, returnedValue.name);
-          }
+        while (
+          functionBody.type === "MemberExpression" &&
+          functionBody.object?.type === "MemberExpression"
+        ) {
+          functionBody = functionBody.object;
+        }
+
+        const returnedValue = functionBody?.property;
+        // check if accessing state is allowed
+        if (
+          returnedValue?.name &&
+          !allowedReduxStates.includes(returnedValue?.name)
+        ) {
+          reportNoRestrictedState(context, returnedValue, returnedValue.name);
         }
       },
       VariableDeclarator(node) {
