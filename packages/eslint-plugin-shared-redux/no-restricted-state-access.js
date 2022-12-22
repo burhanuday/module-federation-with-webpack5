@@ -4,13 +4,13 @@ function isUseSelector(node) {
 
 function isFunctionExpression(node) {
   return (
-    node.type === "ArrowFunctionExpression" ||
-    node.type === "FunctionExpression"
+    node?.type === "ArrowFunctionExpression" ||
+    node?.type === "FunctionExpression"
   );
 }
 
 function isArrowFunctionExpression(node) {
-  return node.type === "ArrowFunctionExpression";
+  return node?.type === "ArrowFunctionExpression";
 }
 
 function isObjectDestructuring(node) {
@@ -49,7 +49,11 @@ module.exports = {
             if (keys) {
               for (const property of keys) {
                 if (!allowedReduxStates.includes(property?.key?.name)) {
-                  reportNoRestrictedState(context, node, property?.key?.name);
+                  reportNoRestrictedState(
+                    context,
+                    property,
+                    property?.key?.name
+                  );
                 }
               }
             }
@@ -85,9 +89,16 @@ module.exports = {
             returnedValue?.name &&
             !allowedReduxStates.includes(returnedValue?.name)
           ) {
-            reportNoRestrictedState(context, node, returnedValue.name);
+            reportNoRestrictedState(context, returnedValue, returnedValue.name);
           }
         }
+      },
+      VariableDeclarator(node) {
+        if (node.id?.name !== "mapStateToProps") return;
+
+        if (!isFunctionExpression(node.init)) return;
+
+        const functionExpression = node.init;
       },
     };
   },
