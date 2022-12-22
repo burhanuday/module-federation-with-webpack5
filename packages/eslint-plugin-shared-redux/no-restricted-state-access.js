@@ -28,6 +28,24 @@ function reportNoRestrictedState(context, node, stateName) {
   });
 }
 
+function getAllowedReduxStates(context) {
+  const config = context.options[0] || {};
+  const allowedReduxStates = config.allowedReduxStates || [];
+  if (config.appState) allowedReduxStates.push(config.appState);
+}
+
+function validateDestructuredParams(context, destructuredObject) {
+  const allowedReduxStates = getAllowedReduxStates(context);
+  const keys = destructuredObject?.properties;
+  if (keys) {
+    for (const property of keys) {
+      if (!allowedReduxStates.includes(property?.key?.name)) {
+        reportNoRestrictedState(context, property, property?.key?.name);
+      }
+    }
+  }
+}
+
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
@@ -37,9 +55,7 @@ module.exports = {
     },
   },
   create(context) {
-    const config = context.options[0] || {};
-    const allowedReduxStates = config.allowedReduxStates || [];
-    if (config.appState) allowedReduxStates.push(config.appState);
+    const allowedReduxStates = getAllowedReduxStates(context);
 
     return {
       CallExpression(node) {
@@ -49,18 +65,7 @@ module.exports = {
           if (isObjectDestructuring(functionExpression.params?.[0])) {
             // handle the destructuring case with multiple keys
             const destructuredObject = functionExpression.params[0];
-            const keys = destructuredObject?.properties;
-            if (keys) {
-              for (const property of keys) {
-                if (!allowedReduxStates.includes(property?.key?.name)) {
-                  reportNoRestrictedState(
-                    context,
-                    property,
-                    property?.key?.name
-                  );
-                }
-              }
-            }
+            validateDestructuredParams(context, destructuredObject);
             return;
           }
 
@@ -109,14 +114,7 @@ module.exports = {
         if (isObjectDestructuring(firstParam)) {
           // handle destructuring case
           const destructuredObject = firstParam;
-          const keys = destructuredObject?.properties;
-          if (keys) {
-            for (const property of keys) {
-              if (!allowedReduxStates.includes(property?.key?.name)) {
-                reportNoRestrictedState(context, property, property?.key?.name);
-              }
-            }
-          }
+          validateDestructuredParams(context, destructuredObject);
           return;
         }
 
