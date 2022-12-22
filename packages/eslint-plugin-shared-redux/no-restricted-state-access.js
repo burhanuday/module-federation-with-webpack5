@@ -77,25 +77,38 @@ module.exports = {
           } else {
             const blockStatement = functionExpression.body;
 
-            const returnStatement = blockStatement?.body?.find(
-              (item) => item.type === "ReturnStatement"
-            );
+            if (isObjectDestructuring(functionExpression.params?.[0])) {
+              // handle the destructuring case
+              const destructuredObject = functionExpression.params[0];
+              const keys = destructuredObject?.properties;
+              if (keys) {
+                for (const property of keys) {
+                  if (!allowedReduxStates.includes(property?.key?.name)) {
+                    reportNoRestrictedState(context, node, property?.key?.name);
+                  }
+                }
+              }
+            } else {
+              const returnStatement = blockStatement?.body?.find(
+                (item) => item.type === "ReturnStatement"
+              );
 
-            let memberExpression = returnStatement.argument;
+              let memberExpression = returnStatement.argument;
 
-            while (
-              memberExpression.type === "MemberExpression" &&
-              memberExpression.object?.type === "MemberExpression"
-            ) {
-              memberExpression = memberExpression.object;
-            }
+              while (
+                memberExpression.type === "MemberExpression" &&
+                memberExpression.object?.type === "MemberExpression"
+              ) {
+                memberExpression = memberExpression.object;
+              }
 
-            const identifier = memberExpression.property;
-            if (
-              identifier?.name &&
-              !allowedReduxStates.includes(identifier?.name)
-            ) {
-              reportNoRestrictedState(context, node, identifier.name);
+              const identifier = memberExpression.property;
+              if (
+                identifier?.name &&
+                !allowedReduxStates.includes(identifier?.name)
+              ) {
+                reportNoRestrictedState(context, node, identifier.name);
+              }
             }
           }
         }

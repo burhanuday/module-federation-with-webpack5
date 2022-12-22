@@ -12,7 +12,10 @@ export function SpeciesCounter() {
   const otherAppCounter7 = useSelector(({ otherApp }) => otherApp.data);
   const otherAppCounter8 = useSelector(({ otherApp }) => otherApp.data.data);
   const otherAppCounter9 = useSelector(
-    ({ otherApp, somethn }) => otherApp.data.data
+    ({ otherApp: { asd }, something }) => otherApp.data.data
+  );
+  const otherAppCounter10 = useSelector(
+    ({ otherApp: abc, something }) => otherApp.data.data
   );
   const otherAppCounter4 = useSelector(function (state) {
     return state.otherApp;
@@ -23,6 +26,10 @@ export function SpeciesCounter() {
 
   const otherAppCounter5 = useSelector(function (state) {
     return state.otherApp.counter.data;
+  });
+
+  const otherAppCounter11 = useSelector(function ({ host, otherApp }) {
+    return otherApp.counter.data;
   });
   const dispatch = useDispatch();
   return (
