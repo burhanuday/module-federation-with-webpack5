@@ -17,6 +17,10 @@ function isObjectDestructuring(node) {
   return node?.type === "ObjectPattern";
 }
 
+function isObjectExpression(node) {
+  return node?.type === "ObjectExpression";
+}
+
 function reportNoRestrictedState(context, node, stateName) {
   context.report({
     message: `App should not access Redux state of other apps. Trying to access "${stateName}"`,
@@ -99,6 +103,78 @@ module.exports = {
         if (!isFunctionExpression(node.init)) return;
 
         const functionExpression = node.init;
+        const functionParams = functionExpression.params;
+        const firstParam = functionParams[0];
+
+        if (isObjectDestructuring(firstParam)) {
+          // handle destructuring case
+          const destructuredObject = firstParam;
+          const keys = destructuredObject?.properties;
+          if (keys) {
+            for (const property of keys) {
+              if (!allowedReduxStates.includes(property?.key?.name)) {
+                reportNoRestrictedState(context, property, property?.key?.name);
+              }
+            }
+          }
+          return;
+        }
+
+        // handle if body is just an object getting returned
+        if (isObjectExpression(functionExpression.body)) {
+          // handle destructuring case
+          const destructuredObject = functionExpression.body;
+          const properties = destructuredObject?.properties;
+
+          for (const property of properties) {
+            let propertyValue = property.value;
+            while (
+              propertyValue.type === "MemberExpression" &&
+              propertyValue.object?.type === "MemberExpression"
+            ) {
+              propertyValue = propertyValue.object;
+            }
+
+            const returnedValue = propertyValue?.property;
+
+            if (
+              returnedValue?.name &&
+              !allowedReduxStates.includes(returnedValue?.name)
+            ) {
+              reportNoRestrictedState(
+                context,
+                returnedValue,
+                returnedValue.name
+              );
+            }
+          }
+
+          return;
+        }
+
+        // handle block statement with return statement
+        let returnStatement = functionExpression.body;
+        returnStatement = returnStatement?.body?.find(
+          (item) => item.type === "ReturnStatement"
+        );
+
+        let returnArgument = returnStatement.argument;
+
+        while (
+          returnArgument.type === "MemberExpression" &&
+          returnArgument.object?.type === "MemberExpression"
+        ) {
+          returnArgument = returnArgument.object;
+        }
+
+        const returnedValue = returnArgument?.property;
+        // check if accessing state is allowed
+        if (
+          returnedValue?.name &&
+          !allowedReduxStates.includes(returnedValue?.name)
+        ) {
+          reportNoRestrictedState(context, returnedValue, returnedValue.name);
+        }
       },
     };
   },

@@ -57,3 +57,21 @@ export function SpeciesCounter() {
     </div>
   );
 }
+
+const mapStateToProps = ({ otherApp, host }: State) => ({
+  integrations: otherApp.data,
+});
+
+const mapStateToProps = (state: State) => ({
+  integrations: state.otherApp.data,
+});
+
+const mapStateToProps = (state: State) => {
+  return state.otherApp.data;
+};
+
+const mapStateToProps = (state: State) => {
+  return {
+    integrations: state.otherApp.data,
+  };
+};
