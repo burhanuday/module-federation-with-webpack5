@@ -42,74 +42,47 @@ module.exports = {
         if (!isUseSelector(node)) return;
         const functionExpression = node.arguments && node.arguments[0];
         if (functionExpression && isFunctionExpression(functionExpression)) {
+          if (isObjectDestructuring(functionExpression.params?.[0])) {
+            // handle the destructuring case
+            const destructuredObject = functionExpression.params[0];
+            const keys = destructuredObject?.properties;
+            if (keys) {
+              for (const property of keys) {
+                if (!allowedReduxStates.includes(property?.key?.name)) {
+                  reportNoRestrictedState(context, node, property?.key?.name);
+                }
+              }
+            }
+            return;
+          }
+
+          let functionBody;
+
           if (isArrowFunctionExpression(functionExpression)) {
-            let functionBody = functionExpression.body;
-
-            // check for params destructuring
-            if (isObjectDestructuring(functionExpression.params?.[0])) {
-              // handle the destructuring case
-              const destructuredObject = functionExpression.params[0];
-              const keys = destructuredObject?.properties;
-              if (keys) {
-                for (const property of keys) {
-                  if (!allowedReduxStates.includes(property?.key?.name)) {
-                    reportNoRestrictedState(context, node, property?.key?.name);
-                  }
-                }
-              }
-            } else {
-              // handle non destructuring case
-              while (
-                functionBody.type === "MemberExpression" &&
-                functionBody.object?.type === "MemberExpression"
-              ) {
-                functionBody = functionBody.object;
-              }
-
-              const returnedValue = functionBody?.property;
-              if (
-                returnedValue?.name &&
-                !allowedReduxStates.includes(returnedValue?.name)
-              ) {
-                reportNoRestrictedState(context, node, returnedValue.name);
-              }
-            }
+            functionBody = functionExpression.body;
           } else {
-            const blockStatement = functionExpression.body;
+            functionBody = functionExpression.body;
+            const returnStatement = functionBody?.body?.find(
+              (item) => item.type === "ReturnStatement"
+            );
 
-            if (isObjectDestructuring(functionExpression.params?.[0])) {
-              // handle the destructuring case
-              const destructuredObject = functionExpression.params[0];
-              const keys = destructuredObject?.properties;
-              if (keys) {
-                for (const property of keys) {
-                  if (!allowedReduxStates.includes(property?.key?.name)) {
-                    reportNoRestrictedState(context, node, property?.key?.name);
-                  }
-                }
-              }
-            } else {
-              const returnStatement = blockStatement?.body?.find(
-                (item) => item.type === "ReturnStatement"
-              );
+            functionBody = returnStatement.argument;
+          }
 
-              let memberExpression = returnStatement.argument;
+          // handle non destructuring case
+          while (
+            functionBody.type === "MemberExpression" &&
+            functionBody.object?.type === "MemberExpression"
+          ) {
+            functionBody = functionBody.object;
+          }
 
-              while (
-                memberExpression.type === "MemberExpression" &&
-                memberExpression.object?.type === "MemberExpression"
-              ) {
-                memberExpression = memberExpression.object;
-              }
-
-              const identifier = memberExpression.property;
-              if (
-                identifier?.name &&
-                !allowedReduxStates.includes(identifier?.name)
-              ) {
-                reportNoRestrictedState(context, node, identifier.name);
-              }
-            }
+          const returnedValue = functionBody?.property;
+          if (
+            returnedValue?.name &&
+            !allowedReduxStates.includes(returnedValue?.name)
+          ) {
+            reportNoRestrictedState(context, node, returnedValue.name);
           }
         }
       },
