@@ -47,6 +47,26 @@ function validateDestructuredParams(context, destructuredObject) {
   }
 }
 
+function findAndValidateReturnValue(context, node) {
+  const allowedReduxStates = getAllowedReduxStates(context);
+
+  while (
+    node.type === "MemberExpression" &&
+    node.object?.type === "MemberExpression"
+  ) {
+    node = node.object;
+  }
+
+  const returnedValue = node?.property;
+  // check if accessing state is allowed
+  if (
+    returnedValue?.name &&
+    !allowedReduxStates.includes(returnedValue?.name)
+  ) {
+    reportNoRestrictedState(context, returnedValue, returnedValue.name);
+  }
+}
+
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
@@ -56,8 +76,6 @@ module.exports = {
     },
   },
   create(context) {
-    const allowedReduxStates = getAllowedReduxStates(context);
-
     return {
       CallExpression(node) {
         if (!isUseSelector(node)) return;
@@ -87,21 +105,7 @@ module.exports = {
           functionBody = returnStatement.argument;
         }
 
-        while (
-          functionBody.type === "MemberExpression" &&
-          functionBody.object?.type === "MemberExpression"
-        ) {
-          functionBody = functionBody.object;
-        }
-
-        const returnedValue = functionBody?.property;
-        // check if accessing state is allowed
-        if (
-          returnedValue?.name &&
-          !allowedReduxStates.includes(returnedValue?.name)
-        ) {
-          reportNoRestrictedState(context, returnedValue, returnedValue.name);
-        }
+        findAndValidateReturnValue(context, functionBody);
       },
       VariableDeclarator(node) {
         if (node.id?.name !== "mapStateToProps") return;
@@ -127,25 +131,7 @@ module.exports = {
 
           for (const property of properties) {
             let propertyValue = property.value;
-            while (
-              propertyValue.type === "MemberExpression" &&
-              propertyValue.object?.type === "MemberExpression"
-            ) {
-              propertyValue = propertyValue.object;
-            }
-
-            const returnedValue = propertyValue?.property;
-
-            if (
-              returnedValue?.name &&
-              !allowedReduxStates.includes(returnedValue?.name)
-            ) {
-              reportNoRestrictedState(
-                context,
-                returnedValue,
-                returnedValue.name
-              );
-            }
+            findAndValidateReturnValue(context, propertyValue);
           }
 
           return;
@@ -158,22 +144,7 @@ module.exports = {
         );
 
         let returnArgument = returnStatement.argument;
-
-        while (
-          returnArgument.type === "MemberExpression" &&
-          returnArgument.object?.type === "MemberExpression"
-        ) {
-          returnArgument = returnArgument.object;
-        }
-
-        const returnedValue = returnArgument?.property;
-        // check if accessing state is allowed
-        if (
-          returnedValue?.name &&
-          !allowedReduxStates.includes(returnedValue?.name)
-        ) {
-          reportNoRestrictedState(context, returnedValue, returnedValue.name);
-        }
+        findAndValidateReturnValue(context, returnArgument);
       },
     };
   },
