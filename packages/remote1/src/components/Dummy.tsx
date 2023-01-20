@@ -62,18 +62,27 @@ export function SpeciesCounter() {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const mapStateToProps = ({ otherApp, host }: State) => ({
   integrations: otherApp.data,
 });
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const mapStateToProps = (state: State) => ({
   integrations: state.otherApp.data,
 });
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 const mapStateToProps = (state: State) => {
   return state.otherApp.data;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mapStateToProps = (state: State) => {
   return {
     integrations: state.otherApp.data,
