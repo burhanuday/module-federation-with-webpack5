@@ -2,15 +2,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-const { MFLiveReloadPlugin } = require("@module-federation/fmr");
 const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const dependencies = require("./package.json").dependencies;
 
 module.exports = (_, argv) => ({
-  // entry point name should match name in module federation plugin
-  entry: { host: "./src/index.ts" },
+  entry: "./src/index.ts",
   mode: "development",
   devtool: "source-map",
   devServer: {
@@ -21,6 +18,13 @@ module.exports = (_, argv) => ({
       index: "/index.html",
     },
     liveReload: false,
+    allowedHosts: "all",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
+    },
   },
   output: {
     publicPath: "auto",
@@ -30,46 +34,15 @@ module.exports = (_, argv) => ({
     extensions: [".tsx", ".ts", ".js"],
   },
   optimization: {
-    /**
-     * Module federation breaks when setting runtimeChunk to single
-     * In the future - https://github.com/module-federation/concat-runtime
-     */
-    // runtimeChunk: 'single',
-    minimize: true,
+    minimize: false,
     moduleIds: "named",
     chunkIds: "named",
-    splitChunks: {
-      cacheGroups: {
-        defaultVendors: {
-          test: new RegExp(
-            /[\\/]node_modules[\\/](?!(html2canvas|d3|@mikecousins|@bundled-es-modules|chart.js|react-chartjs-2|react-virtualized|react-dates|crypto-js))/
-          ),
-          chunks: "all",
-          name: "vendor",
-          enforce: true,
-          priority: 20,
-        },
-        common: {
-          name: "common",
-          minChunks: 3,
-          reuseExistingChunk: true,
-          enforce: true,
-          priority: 10,
-        },
-      },
-    },
   },
   module: {
     rules: [
       {
         test: /\.css$/i,
-        use: [
-          // MiniCssExtract breaks with module federation in dev mode
-          argv.mode === "development"
-            ? "style-loader"
-            : MiniCssExtractPlugin.loader,
-          "css-loader",
-        ],
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(ts|js)x?$/i,
@@ -86,10 +59,6 @@ module.exports = (_, argv) => ({
     ],
   },
   plugins: [
-    // new MFLiveReloadPlugin({
-    //   container: "host",
-    //   port: 3000,
-    // }),
     new ModuleFederationPlugin({
       name: "host",
       // avoid exporting as remoteEntry.js May cause confusion
@@ -98,7 +67,6 @@ module.exports = (_, argv) => ({
       remotes: {
         remote1: "remote1@[remote1Url]/remote1.remoteEntry.js",
       },
-      exposes: {},
       shared: {
         ...dependencies,
         react: { singleton: true, requiredVersion: dependencies.react },
@@ -116,7 +84,6 @@ module.exports = (_, argv) => ({
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
-    new MiniCssExtractPlugin(),
     argv.mode === "development" &&
       new ReactRefreshWebpackPlugin({
         exclude: [/node_modules/, /bootstrap\.js$/],

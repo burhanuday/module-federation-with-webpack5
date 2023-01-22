@@ -2,8 +2,6 @@ const { ModuleFederationPlugin } = require("webpack").container;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
 const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
-const { MFLiveReloadPlugin } = require("@module-federation/fmr");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const dependencies = require("./package.json").dependencies;
 
@@ -12,8 +10,7 @@ module.exports = (_, argv) => {
 
   return {
     devtool: "source-map",
-    // entry point name should match name in module federation plugin
-    entry: { remote1: "./src/index.ts" },
+    entry: "./src/index.ts",
     optimization: {
       minimize: false,
     },
@@ -22,6 +19,14 @@ module.exports = (_, argv) => {
       static: path.join(__dirname, "dist"),
       port: 3001,
       liveReload: false,
+      allowedHosts: "all",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        "Access-Control-Allow-Headers":
+          "X-Requested-With, content-type, Authorization",
+      },
     },
     output: {
       publicPath: "auto",
@@ -34,11 +39,7 @@ module.exports = (_, argv) => {
       rules: [
         {
           test: /\.css$/i,
-          // MiniCssExtract breaks with module federation in dev mode
-          use: [
-            isDev ? "style-loader" : MiniCssExtractPlugin.loader,
-            "css-loader",
-          ],
+          use: ["style-loader", "css-loader"],
         },
         {
           test: /\.(ts|js)x?$/i,
@@ -54,13 +55,6 @@ module.exports = (_, argv) => {
       ],
     },
     plugins: [
-      // Used for automatic reloads. container should match
-      // name of the current project
-      isDev &&
-        new MFLiveReloadPlugin({
-          container: "remote1",
-          port: 3001,
-        }),
       isDev &&
         new ReactRefreshWebpackPlugin({
           exclude: [/node_modules/, /bootstrap\.js$/],
@@ -83,13 +77,11 @@ module.exports = (_, argv) => {
         // avoid exporting as remoteEntry.js May cause confusion
         filename: "remote1.remoteEntry.js",
         exposes: {
-          "./Button": "./src/Button",
-          "./Heading": "./src/Heading",
+          "./RemoteCounter": "./src/RemoteCounter",
         },
       }),
       // allows usage of dynamic remote urls
       new ExternalTemplateRemotesPlugin(),
-      new MiniCssExtractPlugin(),
     ].filter(Boolean),
   };
 };

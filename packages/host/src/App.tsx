@@ -1,5 +1,7 @@
-import React, { Suspense, useState } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+
+import RemoteCounter from "remote1/RemoteCounter";
 
 import "./index.css";
 
@@ -18,35 +20,13 @@ const App = (): JSX.Element => {
           }}
         >
           <h1>HOST</h1>
-          local state{count}:{" "}
+          local state {count}:{" "}
           <button onClick={() => setCount((count) => count + 1)}>
             increment
           </button>
           <br />
         </div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/button">Button</Link>
-            </li>
-            <li>
-              <Link to="/heading">Heading</Link>
-            </li>
-          </ul>
-        </nav>
-        <Suspense fallback={"loading..."}>
-          <Switch>
-            <Route path="/button">
-              <Button />
-            </Route>
-            <Route path="/heading">
-              <Heading />
-            </Route>
-          </Switch>
-        </Suspense>
+        <RemoteCounter />
       </div>
     </Router>
   );
