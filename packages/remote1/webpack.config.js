@@ -82,10 +82,6 @@ module.exports = (_, argv) => {
         },
         // avoid exporting as remoteEntry.js May cause confusion
         filename: "remote1.remoteEntry.js",
-        remotes: {
-          // hostUrl is set on window of host
-          host: "host@[hostUrl]/host.remoteEntry.js",
-        },
         exposes: {
           "./Button": "./src/Button",
           "./Heading": "./src/Heading",

@@ -1,11 +1,7 @@
 import React, { Suspense, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import Heading from "remote1/Heading";
-
 import "./index.css";
-
-const Button = React.lazy(() => import("remote1/Button"));
 
 const App = (): JSX.Element => {
   const [count, setCount] = useState(0);
