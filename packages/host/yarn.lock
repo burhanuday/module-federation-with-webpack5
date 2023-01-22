@@ -1332,18 +1332,18 @@
     tcp-port-used "^1.0.2"
     ws "^8.0.0"
 
-"@pmmmwh/react-refresh-webpack-plugin@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.5.tgz#e77aac783bd079f548daa0a7f080ab5b5a9741ca"
-  integrity sha512-RbG7h6TuP6nFFYKJwbcToA1rjC1FyPg25NR2noAZ0vKI+la01KTSRPkuVPE+U88jXv7javx2JHglUcL1MHcshQ==
+"@pmmmwh/react-refresh-webpack-plugin@^0.5.10":
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.10.tgz#2eba163b8e7dbabb4ce3609ab5e32ab63dda3ef8"
+  integrity sha512-j0Ya0hCFZPd4x40qLzbhGsh9TMtdb+CJQiso+WxLOPNasohq9cc5SNUcwsZaRH6++Xh91Xkm/xHCkuIiIu0LUA==
   dependencies:
     ansi-html-community "^0.0.8"
     common-path-prefix "^3.0.0"
-    core-js-pure "^3.8.1"
+    core-js-pure "^3.23.3"
     error-stack-parser "^2.0.6"
     find-up "^5.0.0"
     html-entities "^2.1.0"
-    loader-utils "^2.0.0"
+    loader-utils "^2.0.4"
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
@@ -2630,10 +2630,10 @@ core-js-compat@^3.21.0, core-js-compat@^3.22.1:
     browserslist "^4.20.3"
     semver "7.0.0"
 
-core-js-pure@^3.8.1:
-  version "3.22.2"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.22.2.tgz#c10bffdc3028d25c2aae505819a05543db61544f"
-  integrity sha512-Lb+/XT4WC4PaCWWtZpNPaXmjiNDUe5CJuUtbkMrIM1kb1T/jJoAIp+bkVP/r5lHzMr+ZAAF8XHp7+my6Ol0ysQ==
+core-js-pure@^3.23.3:
+  version "3.27.2"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.27.2.tgz#47e9cc96c639eefc910da03c3ece26c5067c7553"
+  integrity sha512-Cf2jqAbXgWH3VVzjyaaFkY1EBazxugUepGymDoeteyYr9ByX51kD2jdHZlsEF/xnJMyN3Prua7mQuzwMg6Zc9A==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -4348,6 +4348,15 @@ loader-utils@^2.0.0:
     emojis-list "^3.0.0"
     json5 "^2.1.2"
 
+loader-utils@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-2.0.4.tgz#8b5cb38b5c34a9a018ee1fc0e6a066d1dfcc528c"
+  integrity sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==
+  dependencies:
+    big.js "^5.2.2"
+    emojis-list "^3.0.0"
+    json5 "^2.1.2"
+
 locate-path@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-5.0.0.tgz#1afba396afd676a6d42504d0a67a3a7eb9f62aa0"
@@ -5104,10 +5113,10 @@ react-redux@^8.0.1:
     react-is "^18.0.0"
     use-sync-external-store "^1.0.0"
 
-react-refresh@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.12.0.tgz#28ac0a2c30ef2bb3433d5fd0621e69a6d774c3a4"
-  integrity sha512-suLIhrU2IHKL5JEKR/fAwJv7bbeq4kJ+pJopf77jHwuR+HmJS/HbrPIGsTBUVfw7tXPOmYv7UJ7PCaN49e8x4A==
+react-refresh@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.14.0.tgz#4e02825378a5f227079554d4284889354e5f553e"
+  integrity sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==
 
 react-router-dom@^5.3.0:
   version "5.3.1"
